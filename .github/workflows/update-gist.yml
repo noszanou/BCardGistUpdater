@@ -1,0 +1,38 @@
+name: Build and Update Gist
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-update-gist:
+    runs-on: windows-latest
+
+    env:
+      NUGET_AUTH_TOKEN: ${{ secrets.TOKEN }}
+      TOKEN: ${{ secrets.TOKEN }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0.x
+          source-url: https://nuget.pkg.github.com/noszanou/index.json
+
+      - name: Restore & Build
+        run: dotnet build --configuration Release
+
+      - name: Run Gist Updater
+        shell: pwsh
+        run: |
+          $UPDATER_PROJECT = Get-ChildItem -Recurse -Filter "*Updater*.csproj" | Select-Object -First 1
+          if (-not $UPDATER_PROJECT) {
+              Write-Host "project not found"
+              exit 1
+          }
+          dotnet run --project $UPDATER_PROJECT.FullName --configuration Release

@@ -23,7 +23,7 @@ namespace BCardGistUpdater.GistUpdater
         public async Task UpdateGistAsync()
         {
             string fileName = "BCard_EN.json";
-            string bcardFolder = Path.Combine(_datFileFolder.RessourceFolder, $"BcardJSON/{fileName}");
+            string bcardFolder = Path.Combine(_datFileFolder.RessourceFolder, "BcardJSON", fileName);
             string gistId = "04f87cbde1db24870b72c88048f70bf3";
 
             if (!File.Exists(bcardFolder))

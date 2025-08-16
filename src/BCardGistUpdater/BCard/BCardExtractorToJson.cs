@@ -25,7 +25,7 @@ namespace BCardGistUpdater.BCard
 
         public async Task Load()
         {
-            string inputFile = Path.Combine(_datFileFolder.DatFolder, "Bcard.dat");
+            string inputFile = Path.Combine(_datFileFolder.DatFolder, "BCard.dat");
             if (!File.Exists(inputFile))
             {
                 throw new FileNotFoundException($"{inputFile} should be present");

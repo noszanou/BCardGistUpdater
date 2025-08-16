@@ -20,7 +20,7 @@ namespace BCardGistUpdater.Extension
                 var logger = provider.GetRequiredService<IBaseLogger>();
                 var folder = new DatFileFolder(logger)
                 {
-                    RessourceFolder = "Ressource/"
+                    RessourceFolder = Path.Combine(AppContext.BaseDirectory, "Ressources")
                 };
                 return folder;
             });

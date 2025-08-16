@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-and-update-gist:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     env:
       NUGET_AUTH_TOKEN: ${{ secrets.TOKEN }}
@@ -30,11 +30,10 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: Run Gist Updater
-        shell: pwsh
         run: |
-          $UPDATER_PROJECT = Get-ChildItem -Recurse -Filter "*Updater*.csproj" | Select-Object -First 1
-          if (-not $UPDATER_PROJECT) {
-              Write-Host "project not found"
+          UPDATER_PROJECT=$(find . -name "*Updater*.csproj" | head -n 1)
+          if [ -z "$UPDATER_PROJECT" ]; then
+              echo "Project not found"
               exit 1
-          }
-          dotnet run --project $UPDATER_PROJECT.FullName --configuration Release
+          fi
+          dotnet run --project "$UPDATER_PROJECT" --configuration Release

@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Za.NosGame.Fetcher" Version="1.0.20" />
-    <PackageReference Include="Za.NosGame.RessourceLoader" Version="1.0.20" />
+    <PackageReference Include="Za.NosGame.Fetcher" Version="1.0.21" />
+    <PackageReference Include="Za.NosGame.RessourceLoader" Version="1.0.21" />
   </ItemGroup>
 
 </Project>

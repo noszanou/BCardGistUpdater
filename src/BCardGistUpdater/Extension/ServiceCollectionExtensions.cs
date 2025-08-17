@@ -28,7 +28,7 @@ namespace BCardGistUpdater.Extension
                 return folder;
             });
             services.AddSingleton(new ConfigManager(useDefaultManager));
-            services.AddSingleton(new NosExtractorConfig(true, false, false, false, true, false));
+            services.AddSingleton(new NosExtractorConfig(true, true, false, false, true, false));
             services.AddTransient<INosExtractor, NosExtractor>();
             services.AddTransient<IClientDownloader, ClientDownloader>();
             services.AddHttpClient();

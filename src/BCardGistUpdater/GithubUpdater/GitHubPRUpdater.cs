@@ -1,4 +1,5 @@
 ﻿using BCardGistUpdater.GithubUpdater.JsonEntities;
+using BCardGistUpdater.Utils;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
@@ -332,6 +333,8 @@ namespace BCardGistUpdater.GithubUpdater
             );
             createRefResp.EnsureSuccessStatusCode();
 
+            bool hasChanges = false;
+
             foreach (var kvp in filesToUpdate)
             {
                 string path = kvp.Key;
@@ -342,32 +345,29 @@ namespace BCardGistUpdater.GithubUpdater
                 dynamic fileInfo = JsonConvert.DeserializeObject(await getFileResp.Content.ReadAsStringAsync());
                 string sha = fileInfo.sha;
 
-                var updatePayload = new
+                bool changed = await GitHubUpdateHelper.UpdateRepoFileIfChangedAsync(client, _owner, _repo, newBranchName, path, content, sha);
+
+                if (changed)
                 {
-                    message = $"Update {path} automatically",
-                    content = Convert.ToBase64String(Encoding.UTF8.GetBytes(content)),
-                    sha,
-                    branch = newBranchName
-                };
-                var updateResp = await client.PutAsync(
-                    $"https://api.github.com/repos/{_owner}/{_repo}/contents/{path}",
-                    new StringContent(JsonConvert.SerializeObject(updatePayload), Encoding.UTF8, "application/json")
-                );
-                updateResp.EnsureSuccessStatusCode();
+                    hasChanges = true;
+                }
             }
 
-            var prPayload = new
+            if (hasChanges)
             {
-                title = "Update json files automatically",
-                head = newBranchName,
-                @base = _baseBranch,
-                body = "Automatic update of JSON files"
-            };
-            var prResp = await client.PostAsync(
-                $"https://api.github.com/repos/{_owner}/{_repo}/pulls",
-                new StringContent(JsonConvert.SerializeObject(prPayload), Encoding.UTF8, "application/json")
-            );
-            prResp.EnsureSuccessStatusCode();
+                var prPayload = new
+                {
+                    title = "Update json files automatically",
+                    head = newBranchName,
+                    @base = _baseBranch,
+                    body = "Automatic update of JSON files"
+                };
+                var prResp = await client.PostAsync(
+                    $"https://api.github.com/repos/{_owner}/{_repo}/pulls",
+                    new StringContent(JsonConvert.SerializeObject(prPayload), Encoding.UTF8, "application/json")
+                );
+                prResp.EnsureSuccessStatusCode();
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ using Za.NosGame.RessourceLoader.Manager;
 using Za.NosGame.Shared.DatEntitys.Entitys;
 using Za.NosGame.Shared.DatEntitys.Enums;
 
-namespace BCardGistUpdater.GithubUpdater
+namespace BCardGistUpdater.Utils
 {
     public class Helper
     {
